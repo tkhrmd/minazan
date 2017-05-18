@@ -1,0 +1,26 @@
+{
+  "name": "皆残",
+  "version": "0.1",
+  "manifest_version": 2,
+  "description": "MINAGINE残業申請ショートカット",
+  "icons": {
+    "32": "icon32.png"
+  },
+  "browser_action": {
+    "default_title": "残業申請",
+    "dafault_icon": {
+      "32": "icon32.png"
+    }
+  },
+  "background": {
+    "scripts": ["open.js"],
+    "persistent": false
+  },
+  "content_scripts": [{
+    "matches": ["https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt*minazan*"],
+    "js": ["autofill.js"]
+  }],
+  "permissions": [
+    "storage"
+  ]
+}
