@@ -55,4 +55,10 @@
     }, function() {});
   });
 
+  let ev = new Event("keyup", {
+    "bubbles": true,
+    "cancelable": false
+  });
+  form.querySelector('#model_end_time').dispatchEvent(ev);
+
 }());
