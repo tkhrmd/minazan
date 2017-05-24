@@ -27,8 +27,8 @@
   // treat as overtime on the previous day until 10 o'clock
   let overnight = date.getHours() < 10;
 
-  // round up the time in 15 minute increments
-  date.setMinutes(Math.ceil(date.getMinutes() / 15) * 15);
+  // round minute down to nearest 15 minutes interval
+  date.setMinutes(Math.floor(date.getMinutes() / 15) * 15);
 
   let _date = overnight ? new Date(date.getTime() - 86400000) : date;
   day = _date.getFullYear() * 10000 + (_date.getMonth() + 1) * 100 + _date.getDate();
@@ -36,8 +36,7 @@
   end = date.getHours() * 100 + date.getMinutes();
   end += overnight ? 2400 : 0;
 
-  // use querySelector instead of getElementById
-  // because it is a fxxxin' html whose id is duplicated
+  // using querySelector because id is duplicated
   let form = document.getElementById('input_form');
   let textarea = form.querySelector('#model_apply_rsn');
   form.querySelector('#model_out_time_wrk_dvsn_id').value = '1';
