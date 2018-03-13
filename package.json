@@ -1,0 +1,19 @@
+{
+  "name": "minazan",
+  "version": "1.0.0",
+  "description": "https://github.com/tkhrmd/minazan.git",
+  "main": "autofill.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tkhrmd/minazan.git"
+  },
+  "author": "Takahiro Maeda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tkhrmd/minazan/issues"
+  },
+  "homepage": "https://github.com/tkhrmd/minazan#readme"
+}
