@@ -18,7 +18,7 @@
   },
   "content_scripts": [{
     "matches": ["https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt*minazan*"],
-    "js": ["autofill.js"]
+    "js": ["app.js"]
   }],
   "permissions": [
     "storage"

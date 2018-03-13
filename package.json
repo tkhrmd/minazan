@@ -4,7 +4,8 @@
   "description": "https://github.com/tkhrmd/minazan.git",
   "main": "autofill.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --module-bind 'js=babel-loader' --resolve-extensions .js --mode production --entry ./src/main.js --output ./extension/app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/tkhrmd/minazan/issues"
   },
-  "homepage": "https://github.com/tkhrmd/minazan#readme"
+  "homepage": "https://github.com/tkhrmd/minazan#readme",
+  "devDependencies": {
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.11"
+  }
 }
