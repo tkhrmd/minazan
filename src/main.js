@@ -1,22 +1,11 @@
+import storage from './storage';
+import querystring from './querystring';
+
 (function() {
 
   // そのうち書き直す
+  let params = querystring.parse(location.search.substr(1));
 
-  // parse query string
-  class Params {
-    constructor() {
-      this._params = {};
-      location.search.substr(1).split('&').forEach(param => {
-        let [key, val] = param.split('=');
-        this._params[key] = decodeURIComponent(val);
-      });
-    }
-    get(key) {
-      return this._params[key];
-    }
-  }
-
-  let params = new Params();
   if (params.get('minazan') != '1') {
     return;
   }
@@ -45,14 +34,12 @@
   form.querySelector('#model_end_time').value = ('0' + end).slice(-4);
   textarea.placeholder = '入力した内容は保存され、次回から自動的に入力されます。';
 
-  chrome.storage.local.get(['reason'], val => {
-    textarea.value = val['reason'] || '';
+  storage.get('reason', val => {
+    textarea.value = val || '';
   });
 
   textarea.addEventListener('blur', function(e) {
-    chrome.storage.local.set({
-      'reason': this.value,
-    }, function() {});
+    storage.set('reason', this.value);
   });
 
   let ev = new Event("keyup", {
