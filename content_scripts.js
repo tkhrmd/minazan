@@ -6,7 +6,7 @@ class Mux {
   handle(pattern, handler) {
     this.map.set(pattern, handler);
   }
-  serve() {
+  dispatch() {
     for (const [pattern, handler] of this.map) {
       if (this.path == pattern) {
         return handler();
@@ -123,7 +123,7 @@ const timecardHandler = () => {
             'datetime': overtime.getDatetime(),
           });
           const url = 'https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt?do=show_input_new&minazan=1&' + query;
-          row.insertAdjacentHTML('beforeEnd', `<td class="center sp_l"><a href="${url}">未申請</a></td>`);
+          last.insertAdjacentHTML('afterend', `<td class="center sp_l"><a href="${url}">未申請</a></td>`);
         }
       }
     }
@@ -163,4 +163,4 @@ const applicationFormHandler = () => {
 const mux = new Mux(location.pathname);
 mux.handle('/hcm/work/wrktimemngmntshtself/sht', timecardHandler);
 mux.handle('/hcm/work/outtimewrkapplymngmnt', applicationFormHandler);
-mux.serve();
+mux.dispatch();
