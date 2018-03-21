@@ -1,6 +1,6 @@
 {
   "name": "皆残",
-  "version": "0.1",
+  "version": "0.3",
   "manifest_version": 2,
   "description": "MINAGINE残業申請ショートカット",
   "icons": {
@@ -13,12 +13,15 @@
     }
   },
   "background": {
-    "scripts": ["open.js"],
+    "scripts": ["background.js"],
     "persistent": false
   },
   "content_scripts": [{
-    "matches": ["https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt*minazan*"],
-    "js": ["app.js"]
+    "matches": [
+      "https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt?*minazan=1*",
+      "https://minagine.awg.co.jp/hcm/work/wrktimemngmntshtself/sht?*minazan=1*"
+    ],
+    "js": ["content_scripts.js"]
   }],
   "permissions": [
     "storage"
