@@ -10,11 +10,8 @@
     "default_title": "残業申請",
     "dafault_icon": {
       "32": "icon32.png"
-    }
-  },
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    },
+    "default_popup": "popup.html"
   },
   "content_scripts": [{
     "matches": [
