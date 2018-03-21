@@ -21,7 +21,8 @@
       "https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt?*minazan=1*",
       "https://minagine.awg.co.jp/hcm/work/wrktimemngmntshtself/sht?*minazan=1*"
     ],
-    "js": ["content_scripts.js"]
+    "js": ["content_scripts.js"],
+    "run_at": "document_end"
   }],
   "permissions": [
     "storage"

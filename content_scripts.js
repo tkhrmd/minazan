@@ -145,9 +145,13 @@ const applicationFormHandler = () => {
 
   const endTime = form.querySelector('#model_end_time');
   endTime.value = overtime.getTime().toString().padStart(4, '0');
-  const event = document.createEvent('HTMLEvents');
-  event.initEvent('keyup', false, true);
-  endTime.dispatchEvent(event);
+
+  // なぜ
+  setTimeout(() => {
+    const event = document.createEvent('HTMLEvents');
+    event.initEvent('keyup', false, true);
+    endTime.dispatchEvent(event);
+  }, 10);
 
   const reason = form.querySelector('#model_apply_rsn');
   const reasonKey = 'reason';
