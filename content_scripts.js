@@ -20,6 +20,7 @@ class Overtime {
     const date = datetime ? this._parse(datetime) : new Date();
     date.setMinutes(Math.floor(date.getMinutes() / 15) * 15);
 
+    // 12時までは前日の残業とみなす
     let time = 0;
     if (date.getHours() < 12) {
       date.setDate(date.getDate() - 1);
@@ -44,7 +45,7 @@ class Overtime {
       Math.floor(yyyymmddhhmm / Math.pow(10, 6)) % 100 - 1,
       Math.floor(yyyymmddhhmm / Math.pow(10, 4)) % 100,
       Math.floor(yyyymmddhhmm / Math.pow(10, 2)) % 100,
-      yyyymmddhhmm % 100,
+      yyyymmddhhmm % 100
     );
   }
 }
@@ -88,63 +89,88 @@ const timecardHandler = () => {
     const first = row.firstElementChild;
     const last = row.lastElementChild;
 
+    // ヘッダ行
     if (first.innerText == '日') {
       last.classList.add('sp_r');
       last.insertAdjacentHTML('afterend', '<th rowspan="3" class="center sp_l">残業申請</th>');
-    } else if (first.innerText == '合計') {
-      last.classList.add('sp_r');
-      last.insertAdjacentHTML('afterend', '<td class="center sp_l">-</td>')
-    } else if (first.innerText == '' && first == last) {
-      last.setAttribute('colspan', parseInt(last.getAttribute('colspan')) + 1);
-    } else if (regexDay.test(first.innerText)) {
-      last.classList.add('sp_r');
-
-      const date = parseInt(row.querySelector('[id^=model_][id$=_wrk_day]').value);
-      const plannedEndTime = parseInt(row.querySelector('[id^=_model_][id$=_pln_wrk_end_time]').value);
-      const endTime = parseInt(row.querySelector('[id^=model_][id$=_wrk_end_apply_time]').value);
-
-      if (!date) {
-        continue;
-      } else if (!plannedEndTime) {
-        last.insertAdjacentHTML('afterend', '<td class="center label_sts sp_l"></td>')
-      } else if (!endTime) {
-        last.insertAdjacentHTML('afterend', '<td class="center sp_l"></td>')
-      } else if (row.querySelector('[title^=平日残業]')) {
-        last.insertAdjacentHTML('afterend', '<td class="center sp_l">申請済</td>')
-      } else {
-
-        const planned = new Overtime(date * 10000 + plannedEndTime);
-        const overtime = new Overtime(date * 10000 + endTime);
-
-        if (overtime.getDatetime() <= planned.getDatetime()) {
-          last.insertAdjacentHTML('afterend', '<td class="center sp_l"></td>')
-        } else {
-          const query = querystring.stringify({
-            'datetime': overtime.getDatetime(),
-          });
-          const url = 'https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt?do=show_input_new&minazan=1&' + query;
-          last.insertAdjacentHTML('afterend', `<td class="center sp_l"><a href="${url}">未申請</a></td>`);
-        }
-      }
+      continue;
     }
+    if (first.innerText == '合計') {
+      last.classList.add('sp_r');
+      last.insertAdjacentHTML('afterend', '<td class="center sp_l">-</td>');
+      continue;
+    }
+    if (first.innerText == '' && first == last) {
+      last.setAttribute('colspan', parseInt(last.getAttribute('colspan')) + 1);
+      continue;
+    }
+    if (!regexDay.test(first.innerText)) {
+      continue;
+    }
+
+    // 以降はタイムカード行
+    last.classList.add('sp_r');
+
+    const date = parseInt(row.querySelector('[id^=model_][id$=_wrk_day]').value);
+    const plannedEndTime = parseInt(row.querySelector('[id^=_model_][id$=_pln_wrk_end_time]').value);
+    const endTime = parseInt(row.querySelector('[id^=model_][id$=_wrk_end_apply_time]').value);
+
+    // 出社日ではない
+    if (!plannedEndTime) {
+      last.insertAdjacentHTML('afterend', '<td class="center label_sts sp_l"></td>');
+      continue;
+    }
+    // 退勤していない
+    if (!endTime) {
+      last.insertAdjacentHTML('afterend', '<td class="center sp_l"></td>');
+      continue;
+    }
+    // 残業申請済み
+    if (row.querySelector('[title^=平日残業]')) {
+      last.insertAdjacentHTML('afterend', '<td class="center sp_l">申請済</td>');
+      continue;
+    }
+
+    const planned = new Overtime(date * 10000 + plannedEndTime);
+    const overtime = new Overtime(date * 10000 + endTime);
+
+    // 残業申請の必要がない
+    if (overtime.getDatetime() <= planned.getDatetime()) {
+      last.insertAdjacentHTML('afterend', '<td class="center sp_l"></td>');
+      continue;
+    }
+
+    // 残業申請リンクを表示
+    const params = {
+      'do': 'show_input_new',
+      'minazan': 1,
+      'datetime': overtime.getDatetime(),
+    };
+    const url = '/hcm/work/outtimewrkapplymngmnt?' + querystring.stringify(params);
+    last.insertAdjacentHTML('afterend', `<td class="center sp_l"><a href="${url}">未申請</a></td>`);
   }
 };
 
 const applicationFormHandler = () => {
   const params = querystring.parse(location.search.substr(1));
+
+  if (params.get('minazan') != 1) {
+    return;
+  }
+
   const overtime = new Overtime(params.get('datetime'));
 
   const form = document.getElementById('input_form');
-  form.querySelector('#model_out_time_wrk_dvsn_id').value = '1';
-  form.querySelector('#model_wrk_day').value = overtime.getDate().toString().padStart(4, '0');
+  form.querySelector('#model_out_time_wrk_dvsn_id').value = 1;
+  form.querySelector('#model_wrk_day').value = overtime.getDate();
 
   const startTime = form.querySelector('#model_strt_time');
   const startTimeKey = 'start_time';
-  storage.get(startTimeKey, val => startTime.value = val || '1900');
+  storage.get(startTimeKey, val => startTime.value = val || 1900);
   startTime.addEventListener('blur', e => storage.set(startTimeKey, startTime.value));
 
   const endTime = form.querySelector('#model_end_time');
-  endTime.value = overtime.getTime().toString().padStart(4, '0');
+  endTime.value = overtime.getTime();
 
   // なぜ
   setTimeout(() => {
