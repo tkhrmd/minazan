@@ -146,7 +146,7 @@ const timecardHandler = () => {
       'minazan': 1,
       'datetime': overtime.getDatetime(),
     };
-    const url = '/hcm/work/outtimewrkapplymngmnt?' + querystring.stringify(params);
+    const url = '/work/outtimewrkapplymngmnt?' + querystring.stringify(params);
     last.insertAdjacentHTML('afterend', `<td class="center sp_l"><a href="${url}">未申請</a></td>`);
   }
 };
@@ -187,6 +187,6 @@ const applicationFormHandler = () => {
 };
 
 const mux = new Mux(location.pathname);
-mux.handle('/hcm/work/wrktimemngmntshtself/sht', timecardHandler);
-mux.handle('/hcm/work/outtimewrkapplymngmnt', applicationFormHandler);
+mux.handle('/work/wrktimemngmntshtself/sht', timecardHandler);
+mux.handle('/work/outtimewrkapplymngmnt', applicationFormHandler);
 mux.dispatch();

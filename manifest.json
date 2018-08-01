@@ -15,8 +15,8 @@
   },
   "content_scripts": [{
     "matches": [
-      "https://minagine.awg.co.jp/hcm/work/outtimewrkapplymngmnt*",
-      "https://minagine.awg.co.jp/hcm/work/wrktimemngmntshtself/sht*"
+      "https://tm.minagine.net/work/outtimewrkapplymngmnt*",
+      "https://tm.minagine.net/work/wrktimemngmntshtself/sht*"
     ],
     "js": ["content_scripts.js"],
     "run_at": "document_end"
